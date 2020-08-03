@@ -1,54 +1,42 @@
 module.exports = {
   siteMetadata: {
-    title: `Catalyst`,
-    description: `Speed up your GatsbyJS development workflow. Designed as a set of opinionated and advanced themes and starters using MDX and Theme-UI. Incorporates gatsby-theme-catalyst-core, gatsby-theme-catalyst-header-top, and gatsby-theme-catalyst-footer.`,
-    keywords: [`gatsby`, `theme`, `react`],
-    author: `Eric Howey`,
-    siteUrl: `https://gatsby-starter-catalyst.netlify.app`, //Change to you site address, required for sitemap.xml and robots.txt file among other things
+    title: `austin blade`,
+    description: `software and design blog by Austin Blade`,
+    keywords: [`austin`, `blade`, `software`, `developer`, `design`],
+    author: `Austin Blade`,
+    siteUrl: `https://austinblade.com`,
     menuLinks: [
       {
-        name: `Page 1`,
-        link: `/page-1`,
+        name: `blog`,
+        link: `/blog`,
         type: `internal`, //internal or anchor
       },
       {
-        name: `Anchor 1`,
-        link: `#anchor-1`,
-        type: `anchor`, //internal or anchor
-      },
-      {
-        name: `Page 2`,
-        link: `/page-2`,
+        name: `about`,
+        link: `/about`,
         type: `internal`, //internal or anchor
-        subMenu: [
-          {
-            name: `Sub 1`,
-            link: `/sub-1`,
-            type: `internal`, //internal or anchor
-          },
-          {
-            name: `Sub 2`,
-            link: `/sub-2`,
-            type: `internal`, //internal or anchor
-          },
-        ],
       },
     ],
     socialLinks: [
       {
         name: `Email`,
-        link: `eric@erichowey.dev`,
-        location: `footer`, //Options are "all", "header", "footer"
+        link: `hello@austinblade.com`,
+        location: `header`, //Options are "all", "header", "footer"
       },
       {
         name: `Twitter`,
-        link: `https://twitter.com/erchwy`,
+        link: `https://twitter.com/_austinblade`,
+        location: `header`, //Options are "all", "header", "footer"
+      },
+      {
+        name: `Instagram`,
+        link: `https://instagram.com/austinblade_`,
         location: `header`, //Options are "all", "header", "footer"
       },
       {
         name: `Github`,
-        link: `https://www.github.com/ehowey`,
-        location: `all`, //Options are "all", "header", "footer"
+        link: `https://www.github.com/THATBLADEBOY`,
+        location: `header`, //Options are "all", "header", "footer"
       },
     ],
   },
@@ -59,12 +47,12 @@ module.exports = {
         //Default options are:
         // contentPath: `content/pages`,
         // assetPath: `content/assets`,
-        // displaySiteLogo: true,
+        displaySiteLogo: false,
         // displaySiteTitle: true,
-        // displaySiteLogoMobile: true,
+        displaySiteLogoMobile: false,
         // displaySiteTitleMobile: true,
         // invertLogo: false,
-        // useStickyHeader: false,
+        useStickyHeader: true,
         // useSocialLinks: true,
         // useColorMode: true,
         // useKatex: false,
@@ -72,7 +60,7 @@ module.exports = {
         // remarkImagesWidth: 1440,
       },
     },
-    `gatsby-theme-catalyst-header-top`, // Try `gatsby-theme-catalyst-header-side`
+    `gatsby-theme-catalyst-header-top`,
     `gatsby-theme-catalyst-footer`,
     {
       resolve: `gatsby-plugin-manifest`,
@@ -83,7 +71,7 @@ module.exports = {
         background_color: `#ffffff`,
         theme_color: `#cccccc`,
         display: `minimal-ui`,
-        icon: `content/assets/catalyst-site-icon.png`, // This path is relative to the root of the site.
+        icon: `content/assets/austinBladeLogoTactical.png`, // This path is relative to the root of the site.
       },
     },
   ],

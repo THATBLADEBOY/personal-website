@@ -6,12 +6,15 @@
   "author": "Eric Howey <eric@erichowey.dev>",
   "dependencies": {
     "gatsby": "^2.24.4",
+    "gatsby-source-filesystem": "^2.3.23",
     "gatsby-theme-catalyst-core": "^2.0.0",
     "gatsby-theme-catalyst-footer": "^1.1.7",
     "gatsby-theme-catalyst-header-side": "^1.1.9",
     "gatsby-theme-catalyst-header-top": "^1.1.9",
+    "gatsby-transformer-remark": "^2.8.27",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "typewriter-effect": "^2.13.1"
   },
   "devDependencies": {
     "prettier": "^2.0.5"
