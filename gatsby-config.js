@@ -47,9 +47,9 @@ module.exports = {
         //Default options are:
         // contentPath: `content/pages`,
         // assetPath: `content/assets`,
-        displaySiteLogo: false,
+        displaySiteLogo: true,
         // displaySiteTitle: true,
-        displaySiteLogoMobile: false,
+        displaySiteLogoMobile: true,
         // displaySiteTitleMobile: true,
         // invertLogo: false,
         useStickyHeader: true,
@@ -71,7 +71,7 @@ module.exports = {
         background_color: `#ffffff`,
         theme_color: `#cccccc`,
         display: `minimal-ui`,
-        icon: `content/assets/austinBladeLogoTactical.png`, // This path is relative to the root of the site.
+        icon: `content/assets/catalyst-site-logo.png`, // This path is relative to the root of the site.
       },
     },
   ],

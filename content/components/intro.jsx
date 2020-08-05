@@ -1,6 +1,8 @@
-import React from "react"
-import Typewriter from "typewriter-effect"
-import { Button } from "theme-ui"
+/** @jsx jsx */
+import { jsx } from "theme-ui"
+import React from "react";
+import { Button } from "theme-ui";
+import Typewriter from "typewriter-effect";
 
 const Intro = () => {
   const [isContactButtonShowing, setContactButtonShowing] = React.useState(
@@ -20,15 +22,15 @@ const Intro = () => {
           onInit={(typewriter) => {
             typewriter
               .start()
-              .changeDelay(75)
+              .changeDelay(40)
               .typeString("hello")
               .typeString("!")
-              .pauseFor(1000)
+              .pauseFor(500)
               .deleteChars(1)
               .typeString(", my name is austin blade.")
-              .pauseFor(2000)
+              .pauseFor(1000)
               .typeString(" i like making software and designing things.")
-              .pauseFor(500)
+              .pauseFor(1000)
               .callFunction(() => {
                 setContactButtonShowing(true)
               })
@@ -37,7 +39,9 @@ const Intro = () => {
       </h1>
       {isContactButtonShowing ? (
         <div>
-          <Button
+          <Button sx={{
+            ":hover": { backgroundColor: "secondary" },
+          }}
             onClick={() =>
               (document.location.href = "mailto:hello@austinblade.com")
             }

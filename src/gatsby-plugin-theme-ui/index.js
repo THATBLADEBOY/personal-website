@@ -1,9 +1,8 @@
-import { merge } from "theme-ui"
-import { BaseTheme } from "gatsby-theme-catalyst-core"
-import { tailwind, baseColors } from "@theme-ui/preset-tailwind"
+import { baseColors } from "@theme-ui/preset-tailwind";
+import { BaseTheme } from "gatsby-theme-catalyst-core";
+import { merge } from "theme-ui";
 
 export default merge(BaseTheme, {
-  // Modifications to the base theme go here. This is an example changing colors and using variants to change your navigation links. Uncomment the code below to see what happens.
   space: [0, 4, 8, 16, 32, 64, 128, 256, 512],
   fonts: {
     body:
@@ -41,7 +40,6 @@ export default merge(BaseTheme, {
       links: baseColors.black[1],
       icons: baseColors.black[1],
     },
-    // You can delete dark mode by removing the "modes" object and setting useColorMode to false in gatsby-theme-catalyst-core
     modes: {
       dark: {
         background: "#121212",
@@ -52,6 +50,7 @@ export default merge(BaseTheme, {
         accent: baseColors.gray[8],
         highlight: baseColors.orange[5],
         muted: baseColors.gray[8],
+        links: "#fff",
         header: {
           text: "#fff",
           textOpen: "#fff",
@@ -124,7 +123,11 @@ export default merge(BaseTheme, {
       lineHeight: "body",
     },
     a: {
-      color: "primary",
+      color: "#fff",
+      textDecoration: "none",
+      ":hover": {
+        textDecoration: "underline",
+      },
     },
     pre: {
       fontFamily: "monospace",
@@ -153,6 +156,13 @@ export default merge(BaseTheme, {
     img: {
       maxWidth: "100%",
     },
+  },
+  sizes: {
+    logoHeightXS: "40px", // Logo height on extra small screens, up to 480px
+    logoHeightS: "40px", // Logo height on small screens, 480px - 768px
+    logoHeightM: "40px", // Logo height on medium screens, 768px - 1024px
+    logoHeightL: "40px", // Logo height on large screens, 1024px - 1440px
+    logoHeightXL: "40px", // Logo height on extra large screens, above 1440px
   },
 
   variants: {
