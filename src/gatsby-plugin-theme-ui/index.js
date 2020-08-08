@@ -1,6 +1,6 @@
-import { baseColors } from "@theme-ui/preset-tailwind";
-import { BaseTheme } from "gatsby-theme-catalyst-core";
-import { merge } from "theme-ui";
+import { baseColors } from "@theme-ui/preset-tailwind"
+import { BaseTheme } from "gatsby-theme-catalyst-core"
+import { merge } from "theme-ui"
 
 export default merge(BaseTheme, {
   space: [0, 4, 8, 16, 32, 64, 128, 256, 512],
@@ -24,13 +24,13 @@ export default merge(BaseTheme, {
     text: "#000",
     background: "#fff",
     primary: "#3333ee",
-    secondary: "#30c",
+    secondary: "#3232cc",
     muted: "#f6f6f6",
     header: {
       text: "#000",
       textOpen: "#fff",
       background: "#fff",
-      backgroundOpen: "#3333ee",
+      backgroundOpen: "#000",
       icons: baseColors.black[1],
       iconsOpen: "#fff",
     },
@@ -46,7 +46,7 @@ export default merge(BaseTheme, {
         text: "#fff",
         textGray: "#9f9f9f",
         primary: "#3333ee",
-        secondary: baseColors.orange[7],
+        secondary: "#3232cc",
         accent: baseColors.gray[8],
         highlight: baseColors.orange[5],
         muted: baseColors.gray[8],
@@ -123,7 +123,7 @@ export default merge(BaseTheme, {
       lineHeight: "body",
     },
     a: {
-      color: "#fff",
+      color: baseColors.purple[4],
       textDecoration: "none",
       ":hover": {
         textDecoration: "underline",

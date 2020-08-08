@@ -40,7 +40,8 @@ const Intro = () => {
       {isContactButtonShowing ? (
         <div>
           <Button sx={{
-            ":hover": { backgroundColor: "secondary" },
+            background: "linear-gradient(45deg, rgba(51,51,238,1) 0%, rgba(154,51,238,1) 100%)",
+            ":hover": { background: "none", backgroundColor: "primary" },
           }}
             onClick={() =>
               (document.location.href = "mailto:hello@austinblade.com")
