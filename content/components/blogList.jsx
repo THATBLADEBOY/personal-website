@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from "theme-ui"
-import React from "react";
+import React from "react"
 
 const BlogList = (props) => {
   const { nodes } = props
@@ -20,7 +20,7 @@ const BlogList = (props) => {
             >
               <h1>{node.frontmatter?.title}</h1>
             </a>
-            <div>{node.excerpt}</div>
+            {/* <div>{node.excerpt}</div> */}
           </>
         )
       })}

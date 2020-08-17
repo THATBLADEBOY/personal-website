@@ -1,0 +1,285 @@
+---
+slug: "/blog/store-function-usestate"
+date: "2020-08-17"
+title: "how tf do you store a function with the useState hook?"
+---
+
+# How tf do you store a function with the useState hook?
+
+You’re building the next greatest to-do app and you find yourself wanting to store a function in state…
+
+Wait..why?? 🤔
+
+Honestly, I couldn’t have come up with a reason as to why you would EVER want to do this but, you know what? I freaking ran into a scenario that called for it, and learned a few things.
+
+In case you ever run into this situation, I hope this article will help you look like a genius (or have your coworker puzzled when they're reviewing your PR).
+
+You can skip my use case scenario and go straight to the how to if you're in a rush. 🏃‍♀
+
+Now.. I know what you're thinking..
+
+<img
+  src="https://media.giphy.com/media/457NTDOuMmDfO/giphy.gif"
+  alt="BUT WHY"
+  style="width:100%;"
+/>
+
+## Why tf would you ever need to store a function in state?
+
+Well I'm about to tell you one of the very few situations where a use case actually occurred.
+
+I was working on a wizard 🧙‍♂️ feature in my company's application. We use wizards for a lot of our forms, and we implement them as modals that cover the entire screen.
+We had an established pattern for these wizards, but we were wanting to add something new to the wizard I was working on. We wanted to add a "Congratulations" step
+after a user completed the wizard. We had some complexities that required me to enable the user to access this wizard from anywhere in the application, be able to tell whether a user's
+intentions were to create a new item, edit an existing item, or copy an existing item, and close out the wizard to display the "Congratualtions" modal and perform a specific action
+based off of the the user's initial intentions after the user completed the form.
+
+Whew.. those were a lot of words. _Requirements._ Am I right?
+
+All of that to say, I needed a way to specifiy the completed action, based off of the user's initial intentions when opening the wizard.
+
+We currently manage our state primarily with React Context and a little sprinkle of local state. If you don't know much about React Context, [here's a good article by Kent Dodds explaining how to use it effectively](https://kentcdodds.com/blog/how-to-use-react-context-effectively).
+We also have this nifty hook called useMediator that we use to display the wizard. I won't go into much detail about this hook (as it's irrevelant to this article), but just know that it works like this:
+
+```typescript
+// we put this in the component that needs to react from a call
+useMediator("showAddPlumbus", (data) => {
+    DO SOME STUFF
+})
+
+// and we can call from another component while specifying the "data"
+// that gets sent
+const handleCopyPlumbus = () => {
+    mediator.send("showAddPlumbus", { YOUR DATA });
+};
+```
+
+> You might have noticed that we are using Plumbuses for this example. A plumbus is something everyone should have and be familiar with, so
+> I figured it'd be good to use. If you're unfamiliar with Plumbuses for some reason, here is a picture of one along with [a link to explain what a Plumbus is](https://rickandmorty.fandom.com/wiki/Plumbus).
+>
+> <img
+>   src="https://cdn.instructables.com/ORIG/FW9/XXSQ/J6QQFK1G/FW9XXSQJ6QQFK1G.jpg"
+>   alt="Plumbus"
+>   style="width:100%;"
+> />
+
+So, I've made this container that uses our useMediator hook and sets "showAddPlumbusWizard" to true. When "showAddPlumbusWizard" is true, we display the wizard.
+
+```typescript
+export const AddPlumbusContainer = () => {
+  const [showAddPlumbusWizard, setShowAddPlumbusWizard] = React.useState<
+    boolean
+  >(false)
+
+  useMediator("showAddPlumbus", (data) => {
+    setShowAddPlumbusWizard(true)
+  })
+
+  const handleClose = () => {
+    setShowAddPlumbusWizard(false)
+  }
+
+  return showAddPlumbusWizard ? (
+    <AddPlumbusForm>
+      <AddPlumbus show={showAddPlumbus} onClose={handleClose} />
+    </AddPlumbusForm>
+  ) : null
+}
+```
+
+Here is an example of a method we would put on a button in another component to open the wizard.
+
+```typescript
+const handleAddPlumbus = () => {
+  mediator.send("showAddPlumbus")
+}
+```
+
+Remember how I said we need to be able to detect the user's primiary intentions and perform an action based off of that primary intention when a user completes the wizard?
+The easiest way to handle this situation with the existing pattern that I just showed you would be to pass some kind of data along to the component using our mediator hook. At first thought,
+I thought we could make an enum of some sort with the different scenarios in them, based on the value that was passed, we could call upon the appropriate action in the AddPlumbusContainer component.
+This would work just fine IF we weren't using React Context AND the actions that needed to be called weren't accessible from different Providers..
+
+So, instead of letting the AddPlumbusContainer decide which action to perform, we actually need to send the action that needs to be performed to the component.
+
+Sending the method is simple with our mediator hook. Using the initial call example, we could just add an action to the data object being passed.
+
+```typescript
+const handleAddPlumbus = () => {
+  mediator.send("showAddPlumbus", {
+    onComplete: doTheSpecialThingForAddingPlumbus,
+  })
+}
+```
+
+We could then access the method in useMediator in the AddPlumbusContainer like so.
+
+```typescript
+export const AddPlumbusContainer = () => {
+  const [showAddPlumbusWizard, setShowAddPlumbusWizard] = React.useState<
+    boolean
+  >(false)
+
+  useMediator("showAddPlumbus", (data) => {
+    // Accessing the onComplete method that was passed off of the data
+    // object.
+    data?.onComplete
+    setShowAddPlumbusWizard(true)
+  })
+
+  const handleClose = () => {
+    setShowAddPlumbusWizard(false)
+  }
+
+  return showAddPlumbusWizard ? (
+    <AddPlumbusForm>
+      <AddPlumbus show={showAddPlumbus} onClose={handleClose} />
+    </AddPlumbusForm>
+  ) : null
+}
+```
+
+Well that's great and all, but now that we have the action, what do we do with it? 🤷‍♂️
+
+I already have the handleClose method that I am passing down to the AddPlumbus wizard to be called on completion of the wizard. It would
+be great if I could call the onComplete method from the data object in the handleClose method! 😀
+
+I'll just need to create some local state to hold that function, set the value when useMediator is called, and call that function in the
+handleClose method.
+
+Here was my first attempt of doing just that.
+
+```typescript
+export const AddPlumbusContainer = () => {
+  const [showAddPlumbusWizard, setShowAddPlumbusWizard] = React.useState<
+    boolean
+  >(false)
+  // Let's store our function locally with the useState hook.
+  const [onComplete, setOnComplete] = React.useState<() => void>(undefined)
+
+  useMediator("showAddPlumbus", (data) => {
+    // We'll set the function here in the useMediator hook
+    // if a function is passed on the data object
+    setOnComplete(data?.onComplete)
+    setShowAddPlumbusWizard(true)
+  })
+
+  const handleClose = () => {
+    setShowAddPlumbusWizard(false)
+    // We'll call on the function set (if it exists) here in the
+    // handleClose method
+    onComplete?.()
+  }
+
+  return showAddPlumbusWizard ? (
+    <AddPlumbusForm>
+      <AddPlumbus show={showAddPlumbus} onClose={handleClose} />
+    </AddPlumbusForm>
+  ) : null
+}
+```
+
+Seems pretty straight forward right? Well, I kept getting this hecking error with this implementation.
+
+> ### Unhandled Rejection (TypeError): onComplete is not a function
+
+This drove me nuts. 😳 I would console.log() the function before setting it, and it was showing up as
+the function I was passing on the data object. WHY TF IS REACT SAYING THAT IT IS NOT A FUNCTION?!?!
+
+After performing a ton of tests to determine why the code wasn't working. It was found that the method
+that was passed, was actually being called.. BUT HOW COULD THAT BE IF THE USER NEVER COMPLETED THE WIZARD
+AND REACT IS FREAKING TELLING ME IT ISN'T A FUNCTION?!?! 😤
+
+The answer turned out to be simple.
+
+Instead of setting our method in state like we would a string, boolean, or number, we should wrap our method to be set in and argument-less function.
+
+```typescript
+export const AddPlumbusContainer = () => {
+  const [showAddPlumbusWizard, setShowAddPlumbusWizard] = React.useState<
+    boolean
+  >(false)
+  const [onComplete, setOnComplete] = React.useState<() => void>(undefined)
+
+  useMediator("showAddPlumbus", (data) => {
+    // Instead of setting our method like this
+    setOnComplete(data?.onComplete)
+    // We need to set our method like this by wrapping our method
+    // in an argument-less function
+    setOnComplete(() => data?.onComplete)
+    setShowAddPlumbusWizard(true)
+  })
+
+  const handleClose = () => {
+    setShowAddPlumbusWizard(false)
+    onComplete?.()
+  }
+
+  return showAddPlumbusWizard ? (
+    <AddPlumbusForm>
+      <AddPlumbus show={showAddPlumbus} onClose={handleClose} />
+    </AddPlumbusForm>
+  ) : null
+}
+```
+
+The code works now! 🎉 Here's why..
+
+## Storing a function in state with the useState hook
+
+React provides a way to lazily initialise a state hook. Doing so ensures that your state is initially set only once. You can utilize this by
+passing an argument-less function to useState that returns the initial value.
+
+```javascript
+const [stateOfThePlumbus, setStateOfThePlumbus] = useState(() => {
+  initialState
+})
+```
+
+Let's say that we want to initally set stateOfThePlumbus as a function. Well, we would ALWAYS have to use the argument-less function (like above) to return
+the function as the initial value.
+
+When passing a function into useState, React has no way of telling that the function you passed in needs to be used as the set value.. useState is built
+to handle functions and it treats the function you pass like the function that it is built to expect.. a lazy initializer. The lazy initialization is ran when setting the state.
+So, you can probably guess what happens when you pass a function into useState without wrapping it in the expected argument-less function for lazy initialization..
+React calls the function you pass into useState when you set the state!
+
+That's great! But in the example from the scenario I explained, we were setting the initial value as undefined, because we would never have an initial value. Why were we
+required to wrap the function in a argument-less function when mutating the state?
+
+A lot like the state initialisation, React is also setup to expect a function when you use the state setter. With React's functional updates, if the new state is computed
+using the previous state, you can pass a function to setState. The function will recieve the previous value and return an updated value. Here's an example:
+
+```typescript
+function PlumbusCounter({ initialCount }) {
+  const [count, setCount] = useState<number>(initialCount)
+  return (
+    <>
+      Count: {count}
+      <button onClick={() => setCount(initialCount)}>Reset</button>
+      <button onClick={() => setCount((prevCount) => prevCount - 1)}>-</button>
+      <button onClick={() => setCount((prevCount) => prevCount + 1)}>+</button>
+    </>
+  )
+}
+```
+
+As you can probably tell from the outcome of initialising the state, if we attempt to set state as a function without wrapping the function in an argument-less function,
+React will call whatever function you pass into the setter, because it is built to handle functional updates.
+
+So, there is one rule to remember when storing functions with the useState hook.
+
+> Always wrap your function in an argument-less function.
+
+```typescript
+const [onComplete, setOnComplete] = React.useState<() => void>(undefined)
+
+setOnComplete(() => data?.onComplete)
+```
+
+Since React is built to expect and run functions in setters and initialisations, we need to provide a function that runs and returns the function we would like to set in
+state when initialising or mutating the state.
+
+It's as simple as that, but it definitely wasn't immediatly obvious to me when I first faced the issue of storing a function with useState. While you should likely
+question yourself if you run into a situation that requires you to store a function with useState (as there are likely better ways to handle the scenario most of the time),
+hopefully now you will be able to handle it like a champ and impress your colleagues with your robust knowlege of the useState hook from React. 😎
