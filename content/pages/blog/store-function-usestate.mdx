@@ -10,11 +10,11 @@ You’re building the next greatest to-do app and you find yourself wanting to s
 
 Wait..why?? 🤔
 
-Honestly, I couldn’t have come up with a reason as to why you would EVER want to do this but, you know what? I freaking ran into a scenario that called for it, and learned a few things.
+Honestly, I couldn’t have come up with a reason as to why you would EVER want to do this but, you know what? I freaking ran into a scenario that called for it and learned a few things.
 
-In case you ever run into this situation, I hope this article will help you look like a genius (or have your coworker puzzled when they're reviewing your PR).
+In case you ever run into this situation, I hope this article will help you look like a genius (or have your coworker puzzled when they're reviewing your PR...jk hopefully not).
 
-You can skip my use case scenario and go straight to the how to if you're in a rush. 🏃‍♀
+You can skip my use case scenario and [go straight to the how to](#storing-a-function-in-state-with-the-usestate-hook) if you're in a rush. 🏃‍♀
 
 Now.. I know what you're thinking..
 
@@ -96,7 +96,7 @@ const handleAddPlumbus = () => {
 ```
 
 Remember how I said we need to be able to detect the user's primiary intentions and perform an action based off of that primary intention when a user completes the wizard?
-The easiest way to handle this situation with the existing pattern that I just showed you would be to pass some kind of data along to the component using our mediator hook. At first thought,
+The easiest way to handle this situation with the existing pattern that I just showed you would be to pass some kind of data along to the component using our mediator hook. At first,
 I thought we could make an enum of some sort with the different scenarios in them, based on the value that was passed, we could call upon the appropriate action in the AddPlumbusContainer component.
 This would work just fine IF we weren't using React Context AND the actions that needed to be called weren't accessible from different Providers..
 
@@ -181,7 +181,10 @@ export const AddPlumbusContainer = () => {
 
 Seems pretty straight forward right? Well, I kept getting this hecking error with this implementation.
 
-> ### Unhandled Rejection (TypeError): onComplete is not a function
+<h3 style={{ color: "red", textAlign: "center" }}>
+  {" "}
+  Unhandled Rejection (TypeError): onComplete is not a function{" "}
+</h3>
 
 This drove me nuts. 😳 I would console.log() the function before setting it, and it was showing up as
 the function I was passing on the data object. WHY TF IS REACT SAYING THAT IT IS NOT A FUNCTION?!?!
@@ -240,14 +243,14 @@ Let's say that we want to initally set stateOfThePlumbus as a function. Well, we
 the function as the initial value.
 
 When passing a function into useState, React has no way of telling that the function you passed in needs to be used as the set value.. useState is built
-to handle functions and it treats the function you pass like the function that it is built to expect.. a lazy initializer. The lazy initialization is ran when setting the state.
+to handle functions and it treats the function you pass like the function that it is built to expect.. _a lazy initializer_. The lazy initialization is ran when setting the state.
 So, you can probably guess what happens when you pass a function into useState without wrapping it in the expected argument-less function for lazy initialization..
-React calls the function you pass into useState when you set the state!
+**React calls the function you pass into useState when you set the state!**
 
 That's great! But in the example from the scenario I explained, we were setting the initial value as undefined, because we would never have an initial value. Why were we
 required to wrap the function in a argument-less function when mutating the state?
 
-A lot like the state initialisation, React is also setup to expect a function when you use the state setter. With React's functional updates, if the new state is computed
+A lot like the state initialisation, React is also setup to expect a function when you use the state setter. With [React's functional updates](https://reactjs.org/docs/hooks-reference.html#functional-updates), if the new state is computed
 using the previous state, you can pass a function to setState. The function will recieve the previous value and return an updated value. Here's an example:
 
 ```typescript
@@ -267,9 +270,9 @@ function PlumbusCounter({ initialCount }) {
 As you can probably tell from the outcome of initialising the state, if we attempt to set state as a function without wrapping the function in an argument-less function,
 React will call whatever function you pass into the setter, because it is built to handle functional updates.
 
-So, there is one rule to remember when storing functions with the useState hook.
+**So, there is one rule to remember when storing functions with the useState hook.**
 
-> Always wrap your function in an argument-less function.
+> **Always wrap your function in an argument-less function.**
 
 ```typescript
 const [onComplete, setOnComplete] = React.useState<() => void>(undefined)
