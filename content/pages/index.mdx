@@ -7,10 +7,6 @@ import BlogSectionHead from "../components/blogSectionHead.jsx"
 <SEO title="Home" />
 <Intro />
 
-<BlogSectionHead />
-
-<BlogList nodes={props.data.allMdx.nodes} />
-
 export const pageQuery = graphql`
   query {
     allMdx(sort: { order: DESC, fields: [frontmatter___date] }) {
